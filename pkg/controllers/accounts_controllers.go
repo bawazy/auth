@@ -10,6 +10,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type UserDetails struct {
+	ID       uint   `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+	Token    string `json:"token"`
+}
+
 func Login(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 	utils.ParseBody(r, user)
@@ -19,21 +27,24 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if len(existinguser) == 0 {
 		w.WriteHeader(http.StatusConflict)
 	} else if checkPasswordHash(user.Password, existinguser[0].Password) {
+
 		//create a token
 		d, _ := HashPassword(existinguser[0].Username)
-		token := &models.Authorizations{
-			Token:    d,
+		usrDetails := &UserDetails{
+			ID:       existinguser[0].ID,
 			Username: existinguser[0].Username,
+			Password: existinguser[0].Password,
+			Email:    existinguser[0].Email,
+			Token:    d,
 		}
 
 		//token := models.CreateToken()
 		//save token to token table
-		// token = &models.Authorizations{Token: d, Username: existinguser[0].Username}
 		//T, _ := json.Marshal(token)
-		tkndetails, _ := json.Marshal(token)
-		usr, _ := json.Marshal(existinguser)
+		// tkndetails, _ := json.Marshal(token)
+		usr, _ := json.Marshal(usrDetails)
 
-		tkndetails = append(tkndetails, usr...)
+		// tkndetails = append(tkndetails, usr...)
 
 		// err := token.CreateToken()
 		// if err != nil {
@@ -42,7 +53,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		//res = append(res[:len(res)-1], []byte(token)...)
 
 		w.WriteHeader(http.StatusOK)
-		w.Write(tkndetails)
+		w.Write(usr)
 
 	} else {
 		w.WriteHeader(http.StatusForbidden)
