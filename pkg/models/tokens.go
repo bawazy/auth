@@ -6,7 +6,6 @@ import (
 
 type Authorizations struct {
 	Token string `json:"token"`
-	// Username string `json:"username"`
 }
 
 func init() {

@@ -38,20 +38,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			Token:    d,
 		}
 
-		//token := models.CreateToken()
 		//save token to token table
-		//T, _ := json.Marshal(token)
-		// tkndetails, _ := json.Marshal(token)
-		usr, _ := json.Marshal(usrDetails)
-
-		// tkndetails = append(tkndetails, usr...)
 
 		// err := token.CreateToken()
 		// if err != nil {
 		// 	log.Fatal(err)
 		// }
-		//res = append(res[:len(res)-1], []byte(token)...)
 
+		usr, _ := json.Marshal(usrDetails)
 		w.WriteHeader(http.StatusOK)
 		w.Write(usr)
 
